@@ -98,7 +98,7 @@ pm run build (default).
     *   **Root Directory**: server.
     *   **Runtime**: Node.
     *   **Build Command**: 
-pm install.
+npm install.
     *   **Start Command**: 
 ode index.js.
 5.  **Environment Variables**:

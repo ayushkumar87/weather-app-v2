@@ -29,7 +29,7 @@ app.use(cors({
 app.use(express.json()); // body-parser
 app.use(cookieParser());
 app.use(session({
-    secret: 'secret_key_weather_app',
+    secret: process.env.SESSION_SECRET || 'secret_key_weather_app',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60000 } // 1 minute session
@@ -53,7 +53,11 @@ app.get('/', (req, res) => {
 const io = configureSocket(server);
 
 // Start Server
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    logger.log(`Server started on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+    server.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        logger.log(`Server started on port ${PORT}`);
+    });
+}
+
+export default app;
