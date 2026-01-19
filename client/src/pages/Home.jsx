@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Search, Droplets, Wind, Eye, Gauge, ThermometerSun, MapPin, Loader2, Activity } from 'lucide-react'
 import { getOwmIconUrl, getWeatherDescription } from '../utils/weatherUtils'
 import { useTheme } from '../context/ThemeContext'
+import { useWeather } from '../context/WeatherContext' // Import context
 import '../components/DashboardGrid.css'
 import HighlightCard from '../components/HighlightCard'
 import HourlyForecastGraph from '../components/HourlyForecastGraph'
@@ -10,27 +11,17 @@ import WindSpeedGraph from '../components/WindSpeedGraph'
 import RightSidebar from '../components/RightSidebar'
 
 function Home() {
-    const [city, setCity] = useState('London')
+    const { currentCity, coordinates, updateCity } = useWeather(); // Use context
     const [weatherData, setWeatherData] = useState(null)
-    const [loading, setLoading] = useState(true) // Start loading immediately
+    const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [inputVal, setInputVal] = useState('')
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [locating, setLocating] = useState(true); // New state for initial location attempt
+    const [locating, setLocating] = useState(false); // Changed default to false as we check context first
 
+    // Theme is enforced to night mode in Context, no dynamic update needed
     const { setTheme } = useTheme();
-
-    const updateTheme = (isDay, weatherCode) => {
-        if (!isDay) {
-            setTheme('night');
-            return;
-        }
-        if (weatherCode <= 3) setTheme('sunny');
-        else if (weatherCode >= 51 && weatherCode <= 67) setTheme('rainy');
-        else if (weatherCode >= 95) setTheme('rainy');
-        else setTheme('cloudy');
-    };
 
     const fetchWeather = async (query = '', lat = null, lon = null) => {
         try {
@@ -49,7 +40,7 @@ function Home() {
             }
 
             const fullData = await response.json()
-            updateTheme(fullData.current.is_day, fullData.current.weather_code);
+            // updateTheme(fullData.current.is_day, fullData.current.weather_code); // Disabled
             setWeatherData(fullData)
         } catch (err) {
             setError(err.message)
@@ -60,58 +51,81 @@ function Home() {
         }
     }
 
+    // Initial load logic
     useEffect(() => {
-        const attemptLocation = async () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        fetchWeather(null, latitude, longitude);
-                        setLocating(false);
-                    },
-                    (err) => {
-                        console.warn("Geolocation failed or denied:", err);
-                        fetchWeather('London'); // Fallback
-                        setLocating(false);
-                    },
-                    { timeout: 5000 } // Add timeout to not wait forever
-                );
+        const init = async () => {
+            // If context already has coordinates or city (not default London unless it is explicitly London), use it.
+            // But 'London' is default. 
+            // Better logic: if this is the FIRST load of the app, try geolocation.
+            // If we have data in context that differs from default or we navigated back, use context.
+
+            // For simplicity: If coordinates exist, use them. If not, use currentCity.
+            // If currentCity is London (default) and no coords, try geolocation ONCE.
+
+            if (coordinates) {
+                fetchWeather(null, coordinates.lat, coordinates.lon);
+            } else if (currentCity && currentCity !== 'London') {
+                fetchWeather(currentCity);
             } else {
-                fetchWeather('London');
-                setLocating(false);
+                // Try geolocation if we are on default
+                setLocating(true);
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+                            updateCity('Current Location', latitude, longitude); // Update context
+                            fetchWeather(null, latitude, longitude);
+                            setLocating(false);
+                        },
+                        (err) => {
+                            console.warn("Geolocation failed or denied:", err);
+                            fetchWeather('London'); // Fallback
+                            setLocating(false);
+                        },
+                        { timeout: 5000 }
+                    );
+                } else {
+                    fetchWeather('London');
+                    setLocating(false);
+                }
             }
         };
-        attemptLocation();
-    }, []);
+        init();
+    }, [currentCity, coordinates]); // Re-run if context changes implies someone else updated it (though mostly Home updates it)
 
-    const handleInputChange = async (e) => {
-        const value = e.target.value;
-        setInputVal(value);
-
-        // Lower threshold to 1 character for faster feedback
-        if (value.length > 1) {
-            try {
-                const res = await fetch(`/api/weather/search?query=${value}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setSuggestions(data || []);
-                    setShowSuggestions(true);
+    // Debounce Effect
+    useEffect(() => {
+        const timerId = setTimeout(async () => {
+            if (inputVal.length > 1) {
+                try {
+                    const res = await fetch(`/ api / weather / search ? query = ${inputVal} `);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setSuggestions(data || []);
+                        setShowSuggestions(true);
+                    }
+                } catch (err) {
+                    console.error("Search error", err);
                 }
-            } catch (err) {
-                console.error("Search error", err);
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
             }
-        } else {
-            setSuggestions([]);
-            setShowSuggestions(false);
-        }
+        }, 300);
+
+        return () => clearTimeout(timerId);
+    }, [inputVal]);
+
+    const handleInputChange = (e) => {
+        setInputVal(e.target.value);
     };
 
     const handleSuggestionClick = (suggestion) => {
-        setCity(suggestion.name);
         setInputVal(suggestion.name);
         setSuggestions([]);
         setShowSuggestions(false);
-        fetchWeather(null, suggestion.latitude, suggestion.longitude);
+        updateCity(suggestion.name, suggestion.latitude, suggestion.longitude); // Update context
+        // fetchWeather will trigger via useEffect dependency on [currentCity, coordinates]
     };
 
     // Close suggestions on click outside (simple version: close on submit)
@@ -119,8 +133,8 @@ function Home() {
         e.preventDefault()
         setShowSuggestions(false);
         if (inputVal.trim()) {
-            setCity(inputVal)
-            fetchWeather(inputVal)
+            updateCity(inputVal); // Update context
+            // fetchWeather will trigger via useEffect
         }
     }
 
@@ -197,7 +211,7 @@ function Home() {
             {!locating && loading && (
                 <div className="loading-indicator" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 150px)', color: 'white', fontSize: '1.2rem' }}>
                     <Loader2 className="spinner" size={48} />
-                    <p style={{ marginTop: '20px' }}>Loading weather data...</p>
+                    <p style={{ marginTop: '20px' }}>Loading weather data for {currentCity}...</p>
                 </div>
             )}
 
@@ -209,11 +223,15 @@ function Home() {
                     {/* --- LEFT COLUMN: Current & Highlights --- */}
                     <div className="left-column">
                         <div className="current-weather-large">
-                            <img
-                                src={getOwmIconUrl(weatherData.current.weather_code, weatherData.current.is_day)}
-                                alt="weather icon"
-                                style={{ width: '100px', margin: '10px 0' }}
-                            />
+                            {/* Header Row: Icon and City Name */}
+                            <div className="top-row" style={{ alignItems: 'center', marginBottom: '10px' }}>
+                                <img
+                                    src={getOwmIconUrl(weatherData.current.weather_code, weatherData.current.is_day)}
+                                    alt="weather icon"
+                                    style={{ width: '80px' }}
+                                />
+                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{currentCity}</div>
+                            </div>
 
                             <div>
                                 <div className="temp">{Math.round(weatherData.current.temp)}°C</div>

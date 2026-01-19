@@ -1,7 +1,7 @@
 import React from 'react';
 import './DashboardGrid.css';
 
-const HighlightCard = ({ title, value, unit, icon: Icon, subText }) => {
+const HighlightCard = React.memo(({ title, value, unit, icon: Icon, subText }) => {
     return (
         <div className="highlight-card">
             <div className="highlight-header">
@@ -16,6 +16,6 @@ const HighlightCard = ({ title, value, unit, icon: Icon, subText }) => {
             </div>
         </div>
     );
-};
+});
 
 export default HighlightCard;

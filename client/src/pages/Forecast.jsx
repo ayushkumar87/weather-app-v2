@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import './Pages.css';
 import { Search } from 'lucide-react';
 import { getOwmIconUrl, getWeatherDescription } from '../utils/weatherUtils';
+import { useWeather } from '../context/WeatherContext';
 
 const Forecast = () => {
+    const { currentCity, coordinates, updateCity } = useWeather();
     const [forecast, setForecast] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [inputVal, setInputVal] = useState('');
 
-    const fetchForecast = async (cityName) => {
+    const fetchForecast = async (cityName, lat, lon) => {
         try {
             setLoading(true);
-            const res = await fetch(`/api/weather/full?city=${cityName}`);
+            let url = `/api/weather/full?`;
+            if (lat && lon) url += `lat=${lat}&lon=${lon}`;
+            else url += `city=${cityName}`;
+
+            const res = await fetch(url);
             if (!res.ok) throw new Error("Failed");
             const data = await res.json();
 
@@ -37,27 +42,19 @@ const Forecast = () => {
     };
 
     useEffect(() => {
-        fetchForecast('London');
-    }, []);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (inputVal.trim()) fetchForecast(inputVal);
-    }
+        // Fetch based on context
+        if (coordinates) {
+            fetchForecast(null, coordinates.lat, coordinates.lon);
+        } else {
+            fetchForecast(currentCity);
+        }
+    }, [currentCity, coordinates]);
 
     return (
         <div className="page-container">
             <header className="home-header">
                 <h1>5-Day Forecast</h1>
-                <form onSubmit={handleSubmit} className="search-form">
-                    <input
-                        type="text"
-                        placeholder="Search city..."
-                        value={inputVal}
-                        onChange={(e) => setInputVal(e.target.value)}
-                    />
-                    <button type="submit"><Search size={20} /></button>
-                </form>
+                <p>Detailed forecast for {currentCity}</p>
             </header>
 
             {loading && <div className="loader">Loading...</div>}

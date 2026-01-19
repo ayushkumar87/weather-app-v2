@@ -283,3 +283,49 @@
         flex-direction: column;
     }
 }
+
+/* Mobile Tweaks */
+@media (max-width: 600px) {
+    .dashboard-grid {
+        padding: 16px;
+        margin-top: 60px;
+        /* Smaller top margin for mobile navbar */
+        gap: 16px;
+    }
+
+    .current-weather-large .temp {
+        font-size: 3.5rem;
+    }
+
+    .current-weather-large {
+        min-height: auto;
+        /* Allow auto height on mobile to fit content */
+        padding: 20px;
+    }
+}
+
+/* Very Small Screen Tweaks (e.g. iPhone SE) */
+@media (max-width: 380px) {
+    .highlights-grid {
+        grid-template-columns: 1fr;
+        /* Stack highlights on tiny screens */
+    }
+
+    .current-weather-large .temp {
+        font-size: 3rem;
+    }
+}
+
+/* TV / Large Screen Tweaks */
+@media (min-width: 1920px) {
+    .dashboard-grid {
+        max-width: 2200px;
+        gap: 40px;
+        grid-template-columns: 450px 1fr 400px;
+    }
+
+    html {
+        font-size: 18px;
+        /* Slightly larger text base for TV */
+    }
+}

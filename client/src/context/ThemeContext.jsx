@@ -1,30 +1,20 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    // "default", "sunny", "rainy", "cloudy", "night", "light"
-    const [theme, setThemeState] = useState("night");
-    const [manualOverride, setManualOverride] = useState(false);
+    // Enforce dark mode ("night") strictly
+    const theme = "night";
 
-    const setTheme = (newTheme) => {
-        // This is for weather updates
-        if (!manualOverride) {
-            setThemeState(newTheme);
-        }
-    };
-
-    const toggleTheme = () => {
-        setManualOverride(true);
-        setThemeState(prev => (prev === 'light' ? 'night' : 'light'));
-    };
+    // disable functional setting (no-op)
+    const setTheme = () => { };
+    const toggleTheme = () => { };
 
     React.useEffect(() => {
-        // Remove old theme classes
-        document.body.classList.remove('theme-default', 'theme-sunny', 'theme-rainy', 'theme-cloudy', 'theme-night', 'theme-light');
-        // Add new theme class
-        document.body.classList.add(`theme-${theme}`);
-    }, [theme]);
+        // Enforce night theme class on body
+        document.body.className = ''; // clear others
+        document.body.classList.add('theme-night');
+    }, []);
 
     return (
         <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

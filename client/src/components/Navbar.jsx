@@ -49,12 +49,7 @@ const Navbar = () => {
                             </li>
                         ))}
 
-                        {/* Theme Toggle */}
-                        <li className="nav-item">
-                            <button className="theme-toggle-btn" onClick={toggleTheme} title="Toggle Theme">
-                                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                            </button>
-                        </li>
+                        {/* Theme Toggle Removed - Dark Mode Only */}
 
                         {/* Auth Section */}
                         <li className="nav-item auth-item">

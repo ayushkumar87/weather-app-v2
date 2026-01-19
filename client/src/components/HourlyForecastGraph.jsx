@@ -11,16 +11,18 @@ import {
 } from 'recharts';
 import './DashboardGrid.css';
 
-const HourlyForecastGraph = ({ data }) => {
+const HourlyForecastGraph = React.memo(({ data }) => {
     // Need to format data for Recharts
     // data.hourly is object of arrays. We need array of objects.
-    const chartData = data.hourly.time.slice(0, 24).map((time, index) => {
-        return {
-            time: new Date(time).toLocaleTimeString([], { hour: '2-digit', hour12: true }),
-            temp: data.hourly.temperature_2m[index],
-            wind: data.hourly.wind_speed_10m[index]
-        };
-    });
+    const chartData = React.useMemo(() => {
+        return data.hourly.time.slice(0, 24).map((time, index) => {
+            return {
+                time: new Date(time).toLocaleTimeString([], { hour: '2-digit', hour12: true }),
+                temp: data.hourly.temperature_2m[index],
+                wind: data.hourly.wind_speed_10m[index]
+            };
+        });
+    }, [data]);
 
     return (
         <div className="highlight-card" style={{ gridColumn: '1 / -1', minHeight: '300px' }}>
@@ -53,6 +55,6 @@ const HourlyForecastGraph = ({ data }) => {
             </div>
         </div>
     );
-};
+});
 
 export default HourlyForecastGraph;

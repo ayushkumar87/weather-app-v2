@@ -2,21 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import './Pages.css';
 import { Search } from 'lucide-react';
+import { useWeather } from '../context/WeatherContext';
 
 const Analytics = () => {
+    const { currentCity, coordinates, updateCity } = useWeather();
     const [data, setData] = useState(null);
-    const [inputVal, setInputVal] = useState('');
 
-    const fetchData = async (c) => {
+    const fetchData = async (c, lat, lon) => {
         try {
-            const res = await fetch(`/api/weather/full?city=${c}`);
+            let url = `/api/weather/full?`;
+            if (lat && lon) url += `lat=${lat}&lon=${lon}`;
+            else url += `city=${c}`;
+
+            const res = await fetch(url);
             if (!res.ok) return;
             const json = await res.json();
             setData(json);
         } catch (e) { console.error(e); }
     }
 
-    useEffect(() => { fetchData('London') }, []);
+    useEffect(() => {
+        if (coordinates) {
+            fetchData(null, coordinates.lat, coordinates.lon);
+        } else {
+            fetchData(currentCity);
+        }
+    }, [currentCity, coordinates]);
 
     // Transform Hourly data for Recharts (Next 24 hours)
     const chartData = data ? data.hourly.time.slice(0, 24).map((timeStr, i) => ({
@@ -30,11 +41,7 @@ const Analytics = () => {
         <div className="page-container">
             <header className="home-header">
                 <h1>Weather Analytics</h1>
-                <p>24-Hour Trends: Temperature & Rain Probability</p>
-                <form onSubmit={(e) => { e.preventDefault(); fetchData(inputVal); }} className="search-form">
-                    <input value={inputVal} onChange={e => setInputVal(e.target.value)} placeholder="City..." />
-                    <button type="submit"><Search size={20} /></button>
-                </form>
+                <p>24-Hour Trends for {currentCity}</p>
             </header>
 
             {data && (

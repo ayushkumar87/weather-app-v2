@@ -9,33 +9,57 @@
 
   /* Deep Dark Gradient similar to reference */
   --bg-gradient: linear-gradient(120deg, #0f1219 0%, #151925 100%);
+  --nav-bg: rgba(15, 18, 25, 0.85);
+  /* Matches #0f1219 */
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.6);
+
+  /* Breakpoints variables (for use in calcs or JS if needed via getComputedStyle, 
+     but mainly serving as documentation for standard media queries) */
+  --bp-mobile: 600px;
+  --bp-tablet: 900px;
+  --bp-laptop: 1280px;
+  --bp-desktop: 1600px;
+
+  /* Safe Areas for Phones */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
 }
 
 /* Day Themes */
 body.theme-sunny {
   --bg-gradient: linear-gradient(120deg, #2980b9 0%, #6dd5fa 100%);
+  --nav-bg: rgba(41, 128, 185, 0.85);
+  /* Matches #2980b9 */
   /* Bright Blue Day */
 }
 
 body.theme-cloudy {
   --bg-gradient: linear-gradient(120deg, #304352 0%, #d7d2cc 100%);
+  --nav-bg: rgba(48, 67, 82, 0.85);
+  /* Matches #304352 */
   /* Greyish Cloud */
 }
 
 body.theme-rainy {
   --bg-gradient: linear-gradient(120deg, #203a43 0%, #2c5364 100%);
+  --nav-bg: rgba(32, 58, 67, 0.85);
+  /* Matches #203a43 */
   /* Darker Rainy Blue */
 }
 
 body.theme-night {
   --bg-gradient: linear-gradient(120deg, #000000 0%, #1a1a1a 100%);
+  --nav-bg: rgba(0, 0, 0, 0.85);
   /* Pure Black/Dark */
 }
 
 body.theme-light {
   --bg-gradient: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  --nav-bg: rgba(253, 251, 251, 0.85);
+  /* Matches #fdfbfb */
   /* White/Light Grey */
   --text-primary: #1a1a1a;
   --text-secondary: #4a4a4a;

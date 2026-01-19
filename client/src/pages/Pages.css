@@ -23,6 +23,7 @@
     font-size: 3rem;
     margin-bottom: 0.5rem;
     background: linear-gradient(to right, #ffffff, #89f7fe);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -330,4 +331,35 @@
     border-radius: 20px;
     color: #4facfe;
     font-weight: bold;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .home-header h1 {
+        font-size: 2rem;
+    }
+
+    .home-header p {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .assistant-box {
+        height: 70vh;
+        border-radius: 16px;
+    }
+
+    .charts-container {
+        padding: 0 1rem;
+        gap: 1.5rem;
+    }
+
+    .chart-box {
+        padding: 1rem;
+    }
+
+    .chart-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
 }
