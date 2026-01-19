@@ -70,3 +70,4 @@ These editors might not have built-in terminals (or require plugins).
 2.  Open your computer's standalone terminal app (Command Prompt, PowerShell, Terminal).
 3.  Open two separate windows/tabs of your terminal app.
 4.  Navigate to the project folder in both and follow the "Quick Start" steps.
+ 
