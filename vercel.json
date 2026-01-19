@@ -1,18 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "client/vite.config.js",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -20,7 +7,12 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/client/$1"
+      "destination": "/client/dist/$1"
     }
-  ]
+  ],
+  "functions": {
+    "server/index.js": {
+      "maxDuration": 10
+    }
+  }
 }
