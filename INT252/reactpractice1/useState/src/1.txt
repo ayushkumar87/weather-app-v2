@@ -1,0 +1,71 @@
+import { useState } from 'react'
+import './App.css'
+
+const App = () => {
+
+  const [title, setTitle] = useState('')
+  const [details, setDetails] = useState('')
+  const [task, setTask] = useState([])
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+
+    const copyTask = [...task]
+    copyTask.push({ title, details })
+    setTask(copyTask)
+
+    setTitle('')
+    setDetails('')
+  }
+
+  const deleteNote = (idx) => {
+    const copyTask = [...task]
+    copyTask.splice(idx, 1)
+    setTask(copyTask)
+  }
+
+  return (
+    <div className="container">
+
+      <form onSubmit={submitHandler} className="form">
+        <h1>Add Notes</h1>
+
+        <input
+          type="text"
+          placeholder="Enter Notes Heading"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+
+        <textarea
+          placeholder="Write Details here"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+        />
+
+        <button>Add Note</button>
+      </form>
+
+      <div className="notes-section">
+        <h1>Recent Notes</h1>
+
+        <div className="notes-container">
+          {task.map((elem, idx) => (
+            <div key={idx} className="note">
+              <div>
+                <h3>{elem.title}</h3>
+                <p>{elem.details}</p>
+              </div>
+              <button onClick={() => deleteNote(idx)} className="delete-btn">
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+export default App

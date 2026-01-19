@@ -1,0 +1,37 @@
+hooks
+1:useState -uesed to change the state of the variable as in reactjs the variable can't be ascess directly so by the help of react we acess the variable using hooks and change its state
+
+2:useEffect - sideeffect ko handle karne ke liye (ex:- Api call,Dom manipulation,event listner)
+
+3:useRef:- kisi bhi dom element ko pakadne ka kaam karta hai (or) mutable values ko hold karne ke liye jo re-render trigger na karein ya dom acess karne ke liye
+
+4:useContext:- manage the global context ex:light theme matalb use kisi bhi position se acess kar sake isiliye useContext ka use karte hai without pop drilling
+
+5:useReducer- manages the complex logic ex:-user has logged in or not(redux ka chota version)
+
+useMemo and useCallback   :- use in optimization ,un necessary re -render avoid karne ke liye.
+
+
+
+const [num,setNum]=useState({user:'ayush',age:10})
+
+const btnClicked=()=>{
+    const newNum={...num};//it will create a same object like num but the reference would be different
+    newNum.user='bcd';
+    setNum(newNum);
+    clg(num);//will change the user of num to bcd;  
+}
+(or)
+
+const btnClicked =()=>{
+    setNum(prev=>({...prev,age:20}));
+}
+
+const [num,setNum]=useState(10)
+const btnClicked =()=>{
+    setNum(prev=>(prev+1));
+    setNum(prev=>(prev+1));
+    setNum(prev=>(prev+1));
+}
+
+preventDefault():  changes the default behaviour of the form 

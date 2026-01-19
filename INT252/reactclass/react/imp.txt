@@ -1,0 +1,9 @@
+in public folder-images are present which we are uploading
+component is a file in which we use .jsx extension,file name first leeter should be capital
+render=loading
+<>  </>--fragments
+component essential parts are:-
+1) Imports
+2)functions
+3)exports
+if server shuts down use::: npm run dev

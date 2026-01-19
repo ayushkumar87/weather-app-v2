@@ -1,0 +1,47 @@
+PS C:\Users\Ayush Kumar\OneDrive\Desktop\reactclass\react> npm create vite@latest
+Need to install the following packages:
+create-vite@8.0.2
+Ok to proceed? (y) y
+
+
+> onedrive@1.0.0 npx
+> create-vite
+
+│
+◇  Project name:
+│  demo
+│
+◇  Select a framework:
+│  React
+│
+◇  Select a variant:
+│  JavaScript
+│
+◇  Use rolldown-vite (Experimental)?:
+│  Yes
+│
+◇  Install with npm and start now?
+│  Yes
+│
+◇  Scaffolding project in C:\Users\Ayush Kumar\OneDrive\Desktop\reactclass\react\demo...
+│
+◇  Installing dependencies with npm...
+
+added 157 packages, and audited 158 packages in 58s
+
+35 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+│
+◇  Starting dev server...
+
+> demo@0.0.0 dev
+> vite
+
+
+  ROLLDOWN-VITE v7.1.14  ready in 310 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help

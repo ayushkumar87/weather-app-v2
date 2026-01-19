@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>    
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+<body>
+    <div class="flex justify-evenly px-4 py-2 bg-red-300">
+        <input type="text" class="bg-red-50 border rounded px-4 py-2" id="regno">
+        <input type="text" class="bg-red-50 border rounded px-4 py-2" id="name">
+         <input type="text" class="bg-red-50 border rounded px-4 py-2" id="cgpa">
+
+
+        <button id="button" onclick="handleclick()" class="border rounded bg-red-50 px-4 py-2 text-blue-700">Submit here</button>
+    </div>
+    
+    <script>
+        let data=[]
+        function handleClick(){
+            
+
+            let newData={
+                regno: document.getElementById('regno').value,
+                name: document.getElementById('name').value,
+                cgpa: document.getElementById('cgpa').value
+            }
+            data.push(newData)
+            console.log(newData)
+            console.log(data)
+             
+            document.getElementById('name').value='',
+            document.getElementById('email').value='',
+            document.getElementById('number').value=''
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+//local storage -
+Local Storage is used in React to store data in the browser permanently, so it doesn’t disappear on page refresh or browser close.
+
+Let’s break it down clearly 👇
+
+🔹 What is Local Storage?
+
+Local Storage is a Web Storage API provided by the browser.
+
+Stores data as key–value pairs
+
+Data is stored as strings
+
+Persists even after refresh or browser restart
+
+Storage limit ≈ 5–10 MB
+
+👉 React does not provide localStorage — it’s a browser feature that React apps often use
+
+
+//code:-
+import React from 'react'
+
+const App = () => {
+    const user={
+        username:'sarthak',
+        age:18,
+        city:'Bhopal'
+    }
+    localStorage.setItem('user',JSON.stringify(user))
+
+    const user=JSON.parse(localStorage.getItem('user'))
+    console.log(user)
+     
+  return (
+    <div>
+    App
+    </div>
+  )
+}
+
+export default App
